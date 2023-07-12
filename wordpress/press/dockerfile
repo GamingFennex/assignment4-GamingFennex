@@ -1,0 +1,11 @@
+FROM wordpress:php7.1-apache
+WORKDIR /usr/src/wordpress
+COPY wp-config-docker.php .
+RUN set -eux; \
+	find /etc/apache2 -name '*.conf' -type f -exec sed -ri -e "s!/var/www/html!$PWD!g" -e "s!Directory /var/www/!Directory $PWD!g" '{}' +; \
+	cp -s wp-config-docker.php wp-config.php
+# COPY . /var/www/html
+COPY custom-plugin/ ./wp-content/plugins
+COPY ./exploit.py /usr/src/wordpress
+EXPOSE 80 
+
